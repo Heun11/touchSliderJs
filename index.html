@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Testing</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      body{
+        background-color: darkslategrey;
+        max-width: 100vw;
+        margin: 0;
+      }
+      #slider{
+        position: relative;
+        width: 100%;
+        height: 50vh;
+        overflow: hidden;
+      }
+      
+      .slide{
+        position: absolute;
+        width: 100%;
+        height: 50vh;
+      }
+
+      #slide1{
+        background-color:lime;
+        right:0%;
+      } 
+      #slide2{
+        background-color:plum;
+        right: -100%;
+      }
+      #slide3{
+        background-color:peru;
+        right: 100%;
+      }
+
+    </style>
+  </head>
+  <body>
+    <h1>Heading</h1>
+    <div id="slider">
+      <div class="slide" id="slide1">
+        <h1>Slide 1</h1>
+        <p>Lorem ipsum dolor sit amet, qui minim labore adipisicing minim sint cillum sint consectetur cupidatat.</p>
+      </div>
+      <div class="slide" id="slide2">
+        <h1>Slide 2</h1>
+        <p>Lorem ipsum dolor sit amet, qui minim labore adipisicing minim sint cillum sint consectetur cupidatat.</p>
+      </div>
+      <div class="slide" id="slide3">
+        <h1>Slide 3</h1>
+        <p>Lorem ipsum dolor sit amet, qui minim labore adipisicing minim sint cillum sint consectetur cupidatat.</p>
+      </div>
+    </div>
+
+    <script>
+      const slider = document.getElementById('slider');
+
+      var pressed = false;
+      var startX = 0;
+      var trashold = 100;
+
+      var sliderC = 0;
+      var slides = [
+        document.getElementById('slide1'),
+        document.getElementById('slide2'),
+        document.getElementById('slide3')
+      ];
+
+      slider.addEventListener('touchstart', function (e) {
+        pressed = true;
+        startX = e.changedTouches[0].pageX;
+      }); 
+
+      slider.addEventListener('touchcancel', function (e) {
+        pressed = false;
+      });
+
+      slider.addEventListener('touchend', function (e) {
+        pressed = false;
+        sliderChange(e.changedTouches[0].pageX-startX);
+      });
+
+      const move = async function(element, dir, milis, num, step)
+      {
+        for(let i=0;i<num;i++){
+          let prev_pos = parseInt(element.style.right);
+          // console.log(element, element.style.right);
+          element.style.right = (prev_pos+(step*dir))+"%";
+          await new Promise(r => setTimeout(r, milis));
+        }
+      }
+
+      const sliderChange = async function(x)
+      {
+        if(Math.abs(x)<trashold){
+          return;
+        }
+
+        var prev = sliderC;
+        if(x>0){
+          sliderC -= 1;
+          if(sliderC<0){
+            sliderC = slides.length-1;
+          }
+          // console.log("lavo");
+
+          slides[prev].style.right = "0%";
+          move(slides[prev], -1, 20, 10, 10);
+          slides[sliderC].style.right = "100%";
+          move(slides[sliderC], -1, 20, 10, 10);
+        }
+        if(x<0){
+          sliderC += 1;
+          if(sliderC>slides.length-1){
+            sliderC = 0;
+          }
+          // console.log("pravo");
+          slides[prev].style.right = "0%";
+          move(slides[prev], 1, 20, 10, 10);
+          slides[sliderC].style.right = "-100%";
+          move(slides[sliderC], 1, 20, 10, 10);
+        }
+
+      }
+    </script>
+
+    <h2>Heading 2</h2>
+    <p style="margin-top: 10%;">
+      Lorem ipsum dolor sit amet, officia excepteur ex fugiat reprehenderit enim labore culpa sint ad nisi Lorem pariatur mollit ex esse exercitation amet. Nisi anim cupidatat excepteur officia. Reprehenderit nostrud nostrud ipsum Lorem est aliquip amet voluptate voluptate dolor minim nulla est proident. Nostrud officia pariatur ut officia. Sit irure elit esse ea nulla sunt ex occaecat reprehenderit commodo officia dolor Lorem duis laboris cupidatat officia voluptate. Culpa proident adipisicing id nulla nisi laboris ex in Lorem sunt duis officia eiusmod. Aliqua reprehenderit commodo ex non excepteur duis sunt velit enim. Voluptate laboris sint cupidatat ullamco ut ea consectetur et est culpa et culpa duis.
+    </p>
+  </body>
+</html>
