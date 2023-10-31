@@ -35,6 +35,10 @@
         background-color:peru;
         right: 100%;
       }
+      #slide4{
+        background-color: aqua;
+        right: 100%;
+      }
 
     </style>
   </head>
@@ -53,6 +57,10 @@
         <h1>Slide 3</h1>
         <p>Lorem ipsum dolor sit amet, qui minim labore adipisicing minim sint cillum sint consectetur cupidatat.</p>
       </div>
+      <div class="slide" id="slide4">
+        <h1>Slide 4</h1>
+        <p>Lorem ipsum dolor sit amet, qui minim labore adipisicing minim sint cillum sint consectetur cupidatat.</p>
+      </div>
     </div>
 
     <script>
@@ -66,7 +74,8 @@
       var slides = [
         document.getElementById('slide1'),
         document.getElementById('slide2'),
-        document.getElementById('slide3')
+        document.getElementById('slide3'),
+        document.getElementById('slide4')
       ];
 
       slider.addEventListener('touchstart', function (e) {
@@ -83,15 +92,27 @@
         sliderChange(e.changedTouches[0].pageX-startX);
       });
 
-      const move = async function(element, dir, milis, num, step)
+      const moveLinear = async function(element, dir, milis, num, step)
       {
         for(let i=0;i<num;i++){
           let prev_pos = parseInt(element.style.right);
-          // console.log(element, element.style.right);
           element.style.right = (prev_pos+(step*dir))+"%";
           await new Promise(r => setTimeout(r, milis));
         }
       }
+
+      const moveNonLinear = async function(element, dir, milis, num)
+      {
+        var full = parseInt(element.style.right);
+        var n = ((num)*(num+1))/2;
+        for(let i=1;i<=num;i++){
+          let x = 100/(n);
+          full += x*i*dir;
+          element.style.right = (full+"%");
+          await new Promise(r => setTimeout(r, milis));
+        }
+      }
+
 
       const sliderChange = async function(x)
       {
@@ -108,9 +129,9 @@
           // console.log("lavo");
 
           slides[prev].style.right = "0%";
-          move(slides[prev], -1, 20, 10, 10);
+          moveNonLinear(slides[prev], -1, 1, 50);
           slides[sliderC].style.right = "100%";
-          move(slides[sliderC], -1, 20, 10, 10);
+          moveNonLinear(slides[sliderC], -1, 1, 50);
         }
         if(x<0){
           sliderC += 1;
@@ -119,9 +140,9 @@
           }
           // console.log("pravo");
           slides[prev].style.right = "0%";
-          move(slides[prev], 1, 20, 10, 10);
+          moveLinear(slides[prev], 1, 1, 50, 2);
           slides[sliderC].style.right = "-100%";
-          move(slides[sliderC], 1, 20, 10, 10);
+          moveLinear(slides[sliderC], 1, 1, 50, 2);
         }
 
       }
