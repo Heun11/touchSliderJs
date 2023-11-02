@@ -11,7 +11,7 @@ small library for mobile touchslider
 ### How to use it?
 #### add this to your html head:
 
-    <script src="touchslider.js" defer></script>
+    <script src="https://touchsliderjs.netlify.app/touchslider.js" defer></script>
 
 
 #### then create this div structure in your html body:
@@ -31,10 +31,11 @@ small library for mobile touchslider
     </div>
 
 #### if you want to change type or speed create JS file and add this:
-    sliderChangeMilis(1); // How many milis will one step sleep
-    sliderChangeLoopN(70); // How many steps
-    sliderChangeType('nonLinear'); // Type of slide (linear, nonLinear)
+    sliderChangeMilis(1); // How many milis will one step sleep (int)
+    sliderChangeLoopN(70); // How many steps (int)
+    sliderChangeOpacity(false); // Slider opacity change (bool)
+    sliderChangeType('nonLinear'); // Type of slide (linear, nonLinear) (string)
 
 ##### and then include file in html head after touchslider.js:
-    <script src="touchslider.js" defer></script>
+    <script src="https://touchsliderjs.netlify.app/touchslider.js" defer></script>
     <script src='myFile.js' defer></script>

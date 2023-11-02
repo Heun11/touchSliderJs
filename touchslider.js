@@ -16,6 +16,7 @@ var slides = document.querySelectorAll('.slide');
 var slider_milis = 1;
 var slider_loop_n = 50;
 var slider_type = 'linear'; // linear / nonLinear
+var slider_opacity = true;
 
 const sliderChangeMilis = function(milis){
   slider_milis = milis;
@@ -27,6 +28,10 @@ const sliderChangeLoopN = function(n){
 
 const sliderChangeType = function(type){
   slider_type = type;
+}
+
+const sliderChangeOpacity = function(bool){
+  slider_opacity = bool;
 }
 
 slider.addEventListener('touchstart', function (e) {
@@ -43,35 +48,49 @@ slider.addEventListener('touchend', function (e) {
     sliderChange(e.changedTouches[0].pageX-startX);
 });
 
-const moveLinear = async function(element, dir, milis, num)
-{
-    let step = 100/num;
-    for(let i=0;i<num;i++){
-        let prev_pos = parseInt(element.style.right);
-        element.style.right = (prev_pos+(step*dir))+"%";
-        await new Promise(r => setTimeout(r, milis));
-    }
-}
-
-const moveNonLinear = async function(element, dir, milis, num)
+const moveLinear = async function(element, dir, milis, num, op)
 {
     var full = parseInt(element.style.right);
-    var n = ((num)*(num+1))/2;
-    for(let i=1;i<=num;i++){
-        let x = 100/(n);
-        full += x*i*dir;
+    let step = 100/num;
+    let os = step/100; 
+    if(!slider_opacity){
+        os = 0;
+    }
+    for(let i=0;i<num;i++){
+        full += step*dir;
         element.style.right = (full+"%");
+        let prev_op = parseFloat(element.style.opacity);
+        element.style.opacity = (prev_op+(os*op));
         await new Promise(r => setTimeout(r, milis));
     }
 }
 
-const move = async function(e, dir){
+const moveNonLinear = async function(element, dir, milis, num, op)
+{
+    var full = parseInt(element.style.right);
+    var full_op = parseFloat(element.style.opacity);
+    var n = ((num)*(num+1))/2;
+    let x = 100/(n);
+    let os = x/100;
+    if(!slider_opacity){
+        os = 0;
+    }
+    for(let i=1;i<=num;i++){
+        full += x*i*dir;
+        element.style.right = (full+"%");
+        full_op += os*i*op;
+        element.style.opacity = (full_op);
+        await new Promise(r => setTimeout(r, milis));
+    }
+}
+
+const move = async function(e, dir, op){
   switch (slider_type) {
     case 'nonLinear':
-      moveNonLinear(e, dir, slider_milis, slider_loop_n);
+      moveNonLinear(e, dir, slider_milis, slider_loop_n, op);
       break;
     default:
-      moveLinear(e, dir, slider_milis, slider_loop_n);
+      moveLinear(e, dir, slider_milis, slider_loop_n, op);
       break;
   }
 }
@@ -91,11 +110,17 @@ const sliderChange = async function(x)
         }
         // console.log("lavo");
         slides[prev].style.right = "0%";
+        if(slider_opacity){
+            slides[prev].style.opacity = "1";
+        }
         // moveNonLinear(slides[prev], -1, slider_milis, 50);
-        move(slides[prev], -1);
+        move(slides[prev], -1, -1);
         slides[sliderC].style.right = "100%";
+        if(slider_opacity){
+            slides[sliderC].style.opacity = "0";
+        }
         // moveNonLinear(slides[sliderC], -1, slider_milis, 50);
-        move(slides[sliderC], -1);
+        move(slides[sliderC], -1, 1);
     }
     if(x<0){
         sliderC += 1;
@@ -104,11 +129,17 @@ const sliderChange = async function(x)
         }
         // console.log("pravo");
         slides[prev].style.right = "0%";
+        if(slider_opacity){
+            slides[prev].style.opacity = "1";
+        }
         // moveLinear(slides[prev], 1, slider_milis, 50, 2);
-        move(slides[prev], 1);
+        move(slides[prev], 1, -1);
         slides[sliderC].style.right = "-100%";
+        if(slider_opacity){
+            slides[sliderC].style.opacity = "0";
+        }
         // moveLinear(slides[sliderC], 1, slider_milis, 50, 2);
-        move(slides[sliderC], 1);
+        move(slides[sliderC], 1, 1);
     }
 
 }
