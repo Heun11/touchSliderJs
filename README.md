@@ -42,6 +42,7 @@ small library for mobile touchslider
     <script src='myFile.js' defer></script>
 
 ### TODO:
+    [] add parseFloat to auto moving functions
     [] add opacity to manual mode
     [] add non-linearity to manual mode
     [] add circles to show slide count
