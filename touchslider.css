@@ -3,15 +3,14 @@ body{
 }
 #slider{
   position: relative;
-  width: 100%;
+  width: 98vw;
   height: 50vh;
   overflow: hidden;
 }
-      
+
 .slide{
   position: absolute;
-  width: 100%;
+  max-width: 90vw;
   height: 50vh;
-  background-color:tan;
 }
 

@@ -15,10 +15,20 @@ var slides = document.querySelectorAll('.slide');
 
 var sx = 0;
 var first = true;
-var manual_barier = 20;
+var manual_barier = 18;
+
+const sliderSetup = function()
+{
+  slides.forEach(s=>{
+    s.style.right = "100%";
+  });
+  slides[0].style.right = "0%";
+}
+
+sliderSetup();
 
 // changable parameters
-var slider_mode = 'auto' // manual / auto(ma iba milis, loopN) + chcem pridat opacity
+var slider_mode = 'auto' // manual / auto(ma iba milis, loopN, opacity)
 var slider_milis = 1;
 var slider_loop_n = 50;
 var slider_type = 'linear'; // linear / nonLinear
@@ -81,7 +91,7 @@ slider.addEventListener('touchend', function (e) {
 
 const moveLinear = async function(element, dir, milis, num, op)
 {
-  var full = parseInt(element.style.right);
+  var full = parseFloat(element.style.right);
   let step = 100/num;
   let os = step/100; 
   if(!slider_opacity){
@@ -98,7 +108,7 @@ const moveLinear = async function(element, dir, milis, num, op)
 
 const moveNonLinear = async function(element, dir, milis, num, op)
 {
-  var full = parseInt(element.style.right);
+  var full = parseFloat(element.style.right);
   var full_op = parseFloat(element.style.opacity);
   var n = ((num)*(num+1))/2;
   let x = 100/(n);
@@ -174,6 +184,7 @@ const sliderChangeAuto = async function(x)
 const moveManual = async function(element, dir, milis, num, op)
 {
   var full = parseFloat(element.style.right);
+  let prev_op = parseFloat(element.style.opacity);
   let step;
   if(dir>0){
     step = (100-Math.abs(full))/num;
@@ -193,9 +204,11 @@ const moveManual = async function(element, dir, milis, num, op)
   }
   for(let i=0;i<num;i++){
     full += step*dir;
+    prev_op += os*op;
     element.style.right = (full+"%");
-    let prev_op = parseFloat(element.style.opacity);
-    // element.style.opacity = (prev_op+(os*op));
+    if(slider_opacity){
+      element.style.opacity = (prev_op);
+    }
     await new Promise(r => setTimeout(r, milis));
   }
 }
@@ -213,18 +226,21 @@ const sliderChangeManual = async function(press, sx, ax)
       slides[sliderC].style.right = "0%";
       slides[right].style.right = "-100%";
 
-      // slides[left].style.opacity = "0";
-      // slides[sliderC].style.opacity = "1";
-      // slides[right].style.opacity = "0";
+      if(slider_opacity){
+        slides[left].style.opacity = "0";
+        slides[sliderC].style.opacity = "1";
+        slides[right].style.opacity = "0";
+      }
     }
-    let step = x/10;
+    let step = x/8;
     
     slides[left].style.right = 100+step+"%";
     slides[sliderC].style.right = 0+step+"%";
     slides[right].style.right = -100+step+"%";
-
-    // slides[left].style.opacity = (Math.abs(step)/100);
-    // slides[right].style.opacity = (Math.abs(step)/100);
+    if(slider_opacity){
+      slides[left].style.opacity = (Math.abs(step)/100);
+      slides[right].style.opacity = (Math.abs(step)/100);
+    }
   }
   else{
     if(parseFloat(slides[sliderC].style.right)>manual_barier){
@@ -261,12 +277,3 @@ const sliderChangeManual = async function(press, sx, ax)
 }
 
 
-const sliderSetup = function()
-{
-  slides.forEach(s=>{
-    s.style.right = "100%";
-  });
-  slides[0].style.right = "0%";
-}
-
-sliderSetup();

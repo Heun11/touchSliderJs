@@ -1,9 +1,15 @@
 # TouchSliderJS
-small library for mobile touchslider
+Small JS&CSS TouchSlider library for touchscreen devices 📱  
 
-## [live demo here](https://touchsliderjs.netlify.app/) (if you are on pc, open dev options and switch to phone view to see it in action) ;) 
+## [live demo here 😃](https://touchsliderjs.netlify.app/) 
+### IMPORTANT 🧐
+> If you are on pc, open dev options and switch to phone view to see it in action 😉
 
-### Why?
+> If you want to change width or height of slider, you must change both .slide and #slider 😉
+
+> It may be slow on some old systems 😔
+
+### Why? 🤔
 - I didn't find good and simple library
 - I wanted a good project
 - I wanted to create this with plain JS and CSS
@@ -41,9 +47,9 @@ small library for mobile touchslider
     <script src="https://touchsliderjs.netlify.app/touchslider.js" defer></script>
     <script src='myFile.js' defer></script>
 
-### TODO:
-    [] add parseFloat to auto moving functions
-    [] add opacity to manual mode
+### TODO  🫡
+    [x] add parseFloat to auto moving functions
+    [x] add opacity to manual mode
     [] add non-linearity to manual mode
     [] add circles to show slide count
     [] add support for multiple sliders
