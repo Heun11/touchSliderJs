@@ -3,6 +3,7 @@ let link = document.createElement('link');
 link.rel = 'stylesheet';
 link.type = 'text/css';
 link.href = 'https://touchsliderjs.netlify.app/touchslider.css';
+// link.href = 'touchslider.css';
 head.appendChild(link);
 
 const slider = document.getElementById('slider');
@@ -17,15 +18,7 @@ var sx = 0;
 var first = true;
 var manual_barier = 18;
 
-const sliderSetup = function()
-{
-  slides.forEach(s=>{
-    s.style.right = "100%";
-  });
-  slides[0].style.right = "0%";
-}
 
-sliderSetup();
 
 // changable parameters
 var slider_mode = 'auto' // manual / auto(ma iba milis, loopN, opacity)
@@ -276,4 +269,12 @@ const sliderChangeManual = async function(press, sx, ax)
   }
 }
 
+const sliderSetup = function()
+{
+  slides.forEach(s=>{
+    s.style.right = "100%";
+  });
+  slides[0].style.right = "0%";
+}
 
+sliderSetup();
