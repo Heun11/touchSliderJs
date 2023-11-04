@@ -1,4 +1,5 @@
 sliderChangeMilis(1);
 sliderChangeLoopN(70);
 // sliderChangeOpacity(false);
-sliderChangeType('nonLinear');
+// sliderChangeType('nonLinear');
+sliderChangeMode('manual');

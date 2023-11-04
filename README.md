@@ -35,7 +35,14 @@ small library for mobile touchslider
     sliderChangeLoopN(70); // How many steps (int)
     sliderChangeOpacity(false); // Slider opacity change (bool)
     sliderChangeType('nonLinear'); // Type of slide (linear, nonLinear) (string)
+    sliderChangeMode('manual') // style of slider (auto, manual) (string)
 
 ##### and then include file in html head after touchslider.js:
     <script src="https://touchsliderjs.netlify.app/touchslider.js" defer></script>
     <script src='myFile.js' defer></script>
+
+### TODO:
+    [] add opacity to manual mode
+    [] add non-linearity to manual mode
+    [] add circles to show slide count
+    [] add support for multiple sliders
