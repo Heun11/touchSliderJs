@@ -57,4 +57,5 @@ Small JS&CSS TouchSlider library for touchscreen devices 📱
     [x] add opacity to manual mode
     [x] add non-linearity to manual mode
     [x] add support for multiple sliders
+    [] add automatic move when dont touched for some time
     [] add circles to show slide count
