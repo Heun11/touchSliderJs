@@ -18,8 +18,6 @@ var sx = 0;
 var first = true;
 var manual_barier = 18;
 
-
-
 // changable parameters
 var slider_mode = 'auto' // manual / auto(ma iba milis, loopN, opacity)
 var slider_milis = 1;
@@ -174,7 +172,7 @@ const sliderChangeAuto = async function(x)
   }
 }
 
-const moveManual = async function(element, dir, milis, num, op)
+const moveManualLinear = async function(element, dir, milis, num, op)
 {
   var full = parseFloat(element.style.right);
   let prev_op = parseFloat(element.style.opacity);
@@ -204,6 +202,52 @@ const moveManual = async function(element, dir, milis, num, op)
     }
     await new Promise(r => setTimeout(r, milis));
   }
+}
+
+const moveManualNonLinear = async function(element, dir, milis, num, op)
+{
+  var full = parseFloat(element.style.right);
+  var full_op = parseFloat(element.style.opacity);
+  var n = ((num)*(num+1))/2;
+  // let x = 100/(n);
+  let x;
+  if(dir>0){
+    x = (100-Math.abs(full))/n;
+    if(full<0){
+      x = Math.abs(full)/n;
+    }
+  }
+  else{
+    x = (Math.abs(full))/n;
+    if(full<0){
+      x = (100-Math.abs(full))/n;
+    }
+  }
+
+  let os = x/100;
+  if(!slider_opacity){
+    os = 0;
+  }
+  for(let i=1;i<=num;i++){
+    full += x*i*dir;
+    element.style.right = (full+"%");
+    full_op += os*i*op;
+    element.style.opacity = (full_op);
+    await new Promise(r => setTimeout(r, milis));
+  }
+}
+
+const moveManual = async function(e, dir, op)
+{
+  switch (slider_type) {
+    case 'nonLinear':
+      moveManualNonLinear(e, dir, slider_milis, slider_loop_n, op);
+      break;
+    default:
+      moveManualLinear(e, dir, slider_milis, slider_loop_n, op);
+      break;
+  }
+
 }
 
 const sliderChangeManual = async function(press, sx, ax)
@@ -237,8 +281,8 @@ const sliderChangeManual = async function(press, sx, ax)
   }
   else{
     if(parseFloat(slides[sliderC].style.right)>manual_barier){
-      moveManual(slides[sliderC], 1, slider_milis, slider_loop_n, -1);
-      moveManual(slides[right], 1, slider_milis, slider_loop_n, 1);
+      moveManual(slides[sliderC], 1, -1);
+      moveManual(slides[right], 1, 1);
 
       sliderC += 1;
       if(sliderC>slides.length-1){
@@ -246,8 +290,8 @@ const sliderChangeManual = async function(press, sx, ax)
       }
     }
     else if(parseFloat(slides[sliderC].style.right)<-manual_barier){
-      moveManual(slides[sliderC], -1, slider_milis, slider_loop_n, -1);
-      moveManual(slides[left], -1, slider_milis, slider_loop_n, 1);
+      moveManual(slides[sliderC], -1, -1);
+      moveManual(slides[left], -1, 1);
 
       sliderC -= 1;
       if(sliderC<0){
@@ -256,14 +300,14 @@ const sliderChangeManual = async function(press, sx, ax)
     }
     else{
       if(parseFloat(slides[sliderC].style.right)>0){
-        moveManual(slides[left], 1, slider_milis, slider_loop_n, -1);
-        moveManual(slides[sliderC], -1, slider_milis, slider_loop_n, 1);
-        moveManual(slides[right], -1, slider_milis, slider_loop_n, -1);
+        moveManual(slides[left], 1,-1);
+        moveManual(slides[sliderC], -1, 1);
+        moveManual(slides[right], -1, -1);
       }
       if(parseFloat(slides[sliderC].style.right)<0){
-        moveManual(slides[left], 1, slider_milis, slider_loop_n, -1);
-        moveManual(slides[sliderC], 1, slider_milis, slider_loop_n, 1);
-        moveManual(slides[right], -1, slider_milis, slider_loop_n, -1);
+        moveManual(slides[left], 1, -1);
+        moveManual(slides[sliderC], 1, 1);
+        moveManual(slides[right], -1, -1);
       }
     }
   }

@@ -50,6 +50,6 @@ Small JS&CSS TouchSlider library for touchscreen devices 📱
 ### TODO  🫡
     [x] add parseFloat to auto moving functions
     [x] add opacity to manual mode
-    [] add non-linearity to manual mode
-    [] add circles to show slide count
+    [x] add non-linearity to manual mode
     [] add support for multiple sliders
+    [] add circles to show slide count
