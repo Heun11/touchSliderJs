@@ -2,90 +2,89 @@ let head = document.getElementsByTagName('HEAD')[0];
 let link = document.createElement('link');
 link.rel = 'stylesheet';
 link.type = 'text/css';
-link.href = 'https://touchsliderjs.netlify.app/touchslider.css';
-// link.href = 'touchslider.css';
+// link.href = 'https://touchsliderjs.netlify.app/touchslider.css';
+link.href = 'touchslider.css';
 head.appendChild(link);
 
-const slider = document.getElementById('slider');
-var pressed = false;
-var startX = 0;
-var endX = 0;
-var trashold = 80;
-var sliderC = 0;
-var slides = document.querySelectorAll('.slide');
+var sliders = [];
 
-var sx = 0;
-var first = true;
-var manual_barier = 18;
-
-// changable parameters
-var slider_mode = 'auto' // manual / auto(ma iba milis, loopN, opacity)
-var slider_milis = 1;
-var slider_loop_n = 50;
-var slider_type = 'linear'; // linear / nonLinear
-var slider_opacity = true;
-
-const sliderChangeMode = function(mode)
+const sliderCreateNew = function(sliderId)
 {
-  slider_mode = mode;
+  sliders.push(
+    {
+      "id":sliderId,
+      "slider":document.getElementById(sliderId),
+      "slides":document.getElementById(sliderId).querySelectorAll('.slide'),
+      "pressed":false,
+      "startX":0,
+      "endX":0,
+      "sliderC":0,
+      "threshold":80,
+      
+      "sx":0,
+      "first":true,
+      "manual_barier":18,
+
+      "mode":'auto',
+      "milis":'milis',
+      "loop_n":50,
+      "type":'linear',
+      "opacity":true
+    }
+  );
+  return sliders.length-1;
 }
 
-const sliderChangeMilis = function(milis)
+const sliderSetup = function()
 {
-  slider_milis = milis;
+  sliders.forEach(slider=>{
+    slider.slides.forEach(s=>{
+      s.style.right = "100%";
+    });
+    slider.slides[0].style.right = "0%";
+
+    slider.slider.addEventListener('touchstart', function (e) {
+      slider.pressed = true;
+      slider.startX = e.changedTouches[0].pageX;
+    });
+  
+    slider.slider.addEventListener('touchmove', function (e) {  
+      slider.sx = e.changedTouches[0].pageX;
+      if(slider.mode=='manual'){
+        sliderChangeManual(slider, true, slider.startX, slider.sx);
+        slider.first = false;
+      }
+    }); 
+  
+    slider.slider.addEventListener('touchcancel', function (e) {
+      slider.pressed = false;
+    });
+  
+    slider.slider.addEventListener('touchend', function (e) {
+      slider.pressed = false;
+      slider.endX = e.changedTouches[0].pageX-slider.startX;
+      if(slider.mode=='auto'){
+        sliderChangeAuto(slider, slider.endX);
+      }
+      if(slider.mode=='manual'){
+        sliderChangeManual(slider, false, slider.startX, slider.sx);
+        slider.first = true;
+      }
+    });
+  });
 }
 
-const sliderChangeLoopN = function(n)
+const sliderChangeParam = function(sliderId, parameter, value)
 {
-  slider_loop_n = n;
+  sliders[sliderId][parameter] = value;
 }
 
-const sliderChangeType = function(type)
-{
-  slider_type = type;
-}
-
-const sliderChangeOpacity = function(bool)
-{
-  slider_opacity = bool;
-}
-
-slider.addEventListener('touchstart', function (e) {
-  pressed = true;
-  startX = e.changedTouches[0].pageX;
-});
-
-slider.addEventListener('touchmove', function (e) {  
-  sx = e.changedTouches[0].pageX;
-  if(slider_mode=='manual'){
-    sliderChangeManual(true, startX, sx);
-    first = false;
-  }
-}); 
-
-slider.addEventListener('touchcancel', function (e) {
-  pressed = false;
-});
-
-slider.addEventListener('touchend', function (e) {
-  pressed = false;
-  endX = e.changedTouches[0].pageX-startX;
-  if(slider_mode=='auto'){
-    sliderChangeAuto(endX);
-  }
-  if(slider_mode=='manual'){
-    sliderChangeManual(false, startX, sx);
-    first = true;
-  }
-
-});
-
-const moveLinear = async function(element, dir, milis, num, op)
+const moveLinear = async function(slider, element, dir, milis, num, op)
 {
   var full = parseFloat(element.style.right);
   let step = 100/num;
   let os = step/100; 
-  if(!slider_opacity){
+  if(!slider.opacity){
     os = 0;
   }
   for(let i=0;i<num;i++){
@@ -97,14 +96,14 @@ const moveLinear = async function(element, dir, milis, num, op)
   }
 }
 
-const moveNonLinear = async function(element, dir, milis, num, op)
+const moveNonLinear = async function(slider, element, dir, milis, num, op)
 {
   var full = parseFloat(element.style.right);
   var full_op = parseFloat(element.style.opacity);
   var n = ((num)*(num+1))/2;
   let x = 100/(n);
   let os = x/100;
-  if(!slider_opacity){
+  if(!slider.opacity){
     os = 0;
   }
   for(let i=1;i<=num;i++){
@@ -116,63 +115,63 @@ const moveNonLinear = async function(element, dir, milis, num, op)
   }
 }
 
-const move = async function(e, dir, op)
+const move = async function(slider, e, dir, op)
 {
-  switch (slider_type) {
+  switch (slider.type) {
     case 'nonLinear':
-      moveNonLinear(e, dir, slider_milis, slider_loop_n, op);
+      moveNonLinear(slider, e, dir, slider.milis, slider.loop_n, op);
       break;
     default:
-      moveLinear(e, dir, slider_milis, slider_loop_n, op);
+      moveLinear(slider, e, dir, slider.milis, slider.loop_n, op);
       break;
   }
 }
 
 
-const sliderChangeAuto = async function(x)
+const sliderChangeAuto = async function(slider, x)
 {
-  if(Math.abs(x)<trashold){
+  if(Math.abs(x)<slider.threshold){
     return;
   }
 
-  var prev = sliderC;
+  var prev = slider.sliderC;
   if(x>0){
-    sliderC -= 1;
-    if(sliderC<0){
-    sliderC = slides.length-1;
+    slider.sliderC -= 1;
+    if(slider.sliderC<0){
+      slider.sliderC = slider.slides.length-1;
     }
     // console.log("lavo");
-    slides[prev].style.right = "0%";
-    if(slider_opacity){
-        slides[prev].style.opacity = "1";
+    slider.slides[prev].style.right = "0%";
+    if(slider.opacity){
+      slider.slides[prev].style.opacity = "1";
     }
-    move(slides[prev], -1, -1);
-    slides[sliderC].style.right = "100%";
-    if(slider_opacity){
-        slides[sliderC].style.opacity = "0";
+    move(slider, slider.slides[prev], -1, -1);
+    slider.slides[slider.sliderC].style.right = "100%";
+    if(slider.opacity){
+      slider.slides[slider.sliderC].style.opacity = "0";
     }
-    move(slides[sliderC], -1, 1);
+    move(slider, slider.slides[slider.sliderC], -1, 1);
   }
   if(x<0){
-    sliderC += 1;
-    if(sliderC>slides.length-1){
-    sliderC = 0;
+    slider.sliderC += 1;
+    if(slider.sliderC>slider.slides.length-1){
+      slider.sliderC = 0;
     }
     // console.log("pravo");
-    slides[prev].style.right = "0%";
-    if(slider_opacity){
-        slides[prev].style.opacity = "1";
+    slider.slides[prev].style.right = "0%";
+    if(slider.opacity){
+      slider.slides[prev].style.opacity = "1";
     }
-    move(slides[prev], 1, -1);
-    slides[sliderC].style.right = "-100%";
-    if(slider_opacity){
-        slides[sliderC].style.opacity = "0";
+    move(slider, slider.slides[prev], 1, -1);
+    slider.slides[slider.sliderC].style.right = "-100%";
+    if(slider.opacity){
+      slider.slides[slider.sliderC].style.opacity = "0";
     }
-    move(slides[sliderC], 1, 1);
+    move(slider, slider.slides[slider.sliderC], 1, 1);
   }
 }
 
-const moveManualLinear = async function(element, dir, milis, num, op)
+const moveManualLinear = async function(slider, element, dir, milis, num, op)
 {
   var full = parseFloat(element.style.right);
   let prev_op = parseFloat(element.style.opacity);
@@ -190,21 +189,21 @@ const moveManualLinear = async function(element, dir, milis, num, op)
     }
   }
   let os = step/100; 
-  if(!slider_opacity){
+  if(!slider.opacity){
     os = 0;
   }
   for(let i=0;i<num;i++){
     full += step*dir;
     prev_op += os*op;
     element.style.right = (full+"%");
-    if(slider_opacity){
+    if(slider.opacity){
       element.style.opacity = (prev_op);
     }
     await new Promise(r => setTimeout(r, milis));
   }
 }
 
-const moveManualNonLinear = async function(element, dir, milis, num, op)
+const moveManualNonLinear = async function(slider, element, dir, milis, num, op)
 {
   var full = parseFloat(element.style.right);
   var full_op = parseFloat(element.style.opacity);
@@ -225,7 +224,7 @@ const moveManualNonLinear = async function(element, dir, milis, num, op)
   }
 
   let os = x/100;
-  if(!slider_opacity){
+  if(!slider.opacity){
     os = 0;
   }
   for(let i=1;i<=num;i++){
@@ -237,88 +236,78 @@ const moveManualNonLinear = async function(element, dir, milis, num, op)
   }
 }
 
-const moveManual = async function(e, dir, op)
+const moveManual = async function(slider, e, dir, op)
 {
-  switch (slider_type) {
+  switch (slider.type) {
     case 'nonLinear':
-      moveManualNonLinear(e, dir, slider_milis, slider_loop_n, op);
+      moveManualNonLinear(slider, e, dir, slider.milis, slider.loop_n, op);
       break;
     default:
-      moveManualLinear(e, dir, slider_milis, slider_loop_n, op);
+      moveManualLinear(slider, e, dir, slider.milis, slider.loop_n, op);
       break;
   }
 
 }
 
-const sliderChangeManual = async function(press, sx, ax)
+const sliderChangeManual = async function(slider, press, sx, ax)
 {
   let x = sx-ax;
 
   if(press){
-    if(first){
-      left = (sliderC<1)?slides.length-1:sliderC-1;
-      right = (sliderC>slides.length-2)?0:sliderC+1;
+    if(slider.first){
+      left = (slider.sliderC<1)?slider.slides.length-1:slider.sliderC-1;
+      right = (slider.sliderC>slider.slides.length-2)?0:slider.sliderC+1;
       
-      slides[left].style.right = "100%";
-      slides[sliderC].style.right = "0%";
-      slides[right].style.right = "-100%";
+      slider.slides[left].style.right = "100%";
+      slider.slides[slider.sliderC].style.right = "0%";
+      slider.slides[right].style.right = "-100%";
 
-      if(slider_opacity){
-        slides[left].style.opacity = "0";
-        slides[sliderC].style.opacity = "1";
-        slides[right].style.opacity = "0";
+      if(slider.opacity){
+        slider.slides[left].style.opacity = "0";
+        slider.slides[slider.sliderC].style.opacity = "1";
+        slider.slides[right].style.opacity = "0";
       }
     }
     let step = x/8;
     
-    slides[left].style.right = 100+step+"%";
-    slides[sliderC].style.right = 0+step+"%";
-    slides[right].style.right = -100+step+"%";
-    if(slider_opacity){
-      slides[left].style.opacity = (Math.abs(step)/100);
-      slides[right].style.opacity = (Math.abs(step)/100);
+    slider.slides[left].style.right = 100+step+"%";
+    slider.slides[slider.sliderC].style.right = 0+step+"%";
+    slider.slides[right].style.right = -100+step+"%";
+    if(slider.opacity){
+      slider.slides[left].style.opacity = (Math.abs(step)/100);
+      slider.slides[right].style.opacity = (Math.abs(step)/100);
     }
   }
   else{
-    if(parseFloat(slides[sliderC].style.right)>manual_barier){
-      moveManual(slides[sliderC], 1, -1);
-      moveManual(slides[right], 1, 1);
+    if(parseFloat(slider.slides[slider.sliderC].style.right)>slider.manual_barier){
+      moveManual(slider, slider.slides[slider.sliderC], 1, -1);
+      moveManual(slider, slider.slides[right], 1, 1);
 
-      sliderC += 1;
-      if(sliderC>slides.length-1){
-        sliderC = 0;
+      slider.sliderC += 1;
+      if(slider.sliderC>slider.slides.length-1){
+        slider.sliderC = 0;
       }
     }
-    else if(parseFloat(slides[sliderC].style.right)<-manual_barier){
-      moveManual(slides[sliderC], -1, -1);
-      moveManual(slides[left], -1, 1);
+    else if(parseFloat(slider.slides[slider.sliderC].style.right)<-slider.manual_barier){
+      moveManual(slider, slider.slides[slider.sliderC], -1, -1);
+      moveManual(slider, slider.slides[left], -1, 1);
 
-      sliderC -= 1;
-      if(sliderC<0){
-        sliderC = slides.length-1;
+      slider.sliderC -= 1;
+      if(slider.sliderC<0){
+        slider.sliderC = slider.slides.length-1;
       }
     }
     else{
-      if(parseFloat(slides[sliderC].style.right)>0){
-        moveManual(slides[left], 1,-1);
-        moveManual(slides[sliderC], -1, 1);
-        moveManual(slides[right], -1, -1);
+      if(parseFloat(slider.slides[slider.sliderC].style.right)>0){
+        moveManual(slider, slider.slides[left], 1,-1);
+        moveManual(slider, slider.slides[slider.sliderC], -1, 1);
+        moveManual(slider, slider.slides[right], -1, -1);
       }
-      if(parseFloat(slides[sliderC].style.right)<0){
-        moveManual(slides[left], 1, -1);
-        moveManual(slides[sliderC], 1, 1);
-        moveManual(slides[right], -1, -1);
+      if(parseFloat(slider.slides[slider.sliderC].style.right)<0){
+        moveManual(slider, slider.slides[left], 1, -1);
+        moveManual(slider, slider.slides[slider.sliderC], 1, 1);
+        moveManual(slider, slider.slides[right], -1, -1);
       }
     }
   }
 }
-
-const sliderSetup = function()
-{
-  slides.forEach(s=>{
-    s.style.right = "100%";
-  });
-  slides[0].style.right = "0%";
-}
-
-sliderSetup();

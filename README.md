@@ -17,11 +17,11 @@ Small JS&CSS TouchSlider library for touchscreen devices 📱
 ### How to use it?
 #### add this to your html head:
 
-    <script src="https://touchsliderjs.netlify.app/touchslider.js" defer></script>
+    <script src="https://touchsliderjs.netlify.app/touchslider.js"></script>
 
 
 #### then create this div structure in your html body:
-    <div id="slider">
+    <div class="slider" id="slider">
         <div class="slide">
             <h1>Slide 1</h1>
         </div>
@@ -36,20 +36,25 @@ Small JS&CSS TouchSlider library for touchscreen devices 📱
         </div>
     </div>
 
-#### if you want to change type or speed create JS file and add this:
-    sliderChangeMilis(1); // How many milis will one step sleep (int)
-    sliderChangeLoopN(70); // How many steps (int)
-    sliderChangeOpacity(false); // Slider opacity change (bool)
-    sliderChangeType('nonLinear'); // Type of slide (linear, nonLinear) (string)
-    sliderChangeMode('manual') // style of slider (auto, manual) (string)
+#### then create new JS file and add this:
+    var sliderId = sliderCreateNew("slider"); // id of slider div
+
+    sliderChangeParam(sliderId, 'milis', 1); // How many milis will one step sleep (int)
+    sliderChangeParam(sliderId, 'loop_n', 80); // How many steps (int)
+    sliderChangeParam(sliderId, 'opacity', true); // Slider opacity change (bool)
+    sliderChangeParam(sliderId, 'type', 'nonLinear'); // Type of slide (linear, nonLinear) (string)
+    sliderChangeParam(sliderId, 'mode', 'auto'); // style of slider (auto, manual) (string)
+
+    sliderSetup();  // Initialize all sliders (put after sliders are created)
+
 
 ##### and then include file in html head after touchslider.js:
-    <script src="https://touchsliderjs.netlify.app/touchslider.js" defer></script>
+    <script src="https://touchsliderjs.netlify.app/touchslider.js"></script>
     <script src='myFile.js' defer></script>
 
 ### TODO  🫡
     [x] add parseFloat to auto moving functions
     [x] add opacity to manual mode
     [x] add non-linearity to manual mode
-    [] add support for multiple sliders
+    [x] add support for multiple sliders
     [] add circles to show slide count
