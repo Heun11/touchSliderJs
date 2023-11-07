@@ -7,7 +7,7 @@ Small JS&CSS TouchSlider library for touchscreen devices 📱
 
 > If you want to change width or height of slider, you must change both .slide and .slider 😉
 
-> It may be slow on some old systems 😔
+> It may be slow on some slower systems 😔
 
 ### Why? 🤔
 - I didn't find good and simple library
