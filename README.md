@@ -44,6 +44,8 @@ Small JS&CSS TouchSlider library for touchscreen devices 📱
     sliderChangeParam(sliderId, 'opacity', true); // Slider opacity change (bool)
     sliderChangeParam(sliderId, 'type', 'nonLinear'); // Type of slide (linear, nonLinear) (string)
     sliderChangeParam(sliderId, 'mode', 'auto'); // style of slider (auto, manual) (string)
+    sliderChangeParam(sliderId, 'moveafter', 8000) // Move to next slide after this milis (int)
+    sliderChangeParam(sliderId, 'movedir', -1) // Direction to move after time (-1/1) (int)
 
     sliderSetup();  // Initialize all sliders (put after sliders are created)
 
@@ -57,5 +59,5 @@ Small JS&CSS TouchSlider library for touchscreen devices 📱
     [x] add opacity to manual mode
     [x] add non-linearity to manual mode
     [x] add support for multiple sliders
-    [] add automatic move when dont touched for some time
+    [x] add automatic move when dont touched for some time
     [] add circles to show slide count

@@ -20,6 +20,7 @@ const sliderCreateNew = function(sliderId)
       "endX":0,
       "sliderC":0,
       "threshold":80,
+      "timerId":null,
       
       "sx":0,
       "first":true,
@@ -29,10 +30,34 @@ const sliderCreateNew = function(sliderId)
       "milis":'milis',
       "loop_n":50,
       "type":'linear',
-      "opacity":true
+      "opacity":true,
+      "moveafter":5000,
+      "movedir":-1,
     }
   );
   return sliders.length-1;
+}
+
+const timerStart = function(slider)
+{
+  var tick = function()
+  {
+    slider.endX = slider.movedir*(slider.threshold+1)
+    sliderChangeAuto(slider, slider.endX);
+    slider.timerId = null;
+    timerStart(slider);
+  }
+  if(slider.timerId==null && slider.moveafter>0){
+    slider.timerId = setTimeout(tick, slider.moveafter);
+  }
+}
+
+const timerClear = function(slider)
+{
+  if(slider.timerId!=null){
+    clearTimeout(slider.timerId);
+    slider.timerId = null;
+  }
 }
 
 const sliderSetup = function()
@@ -43,9 +68,13 @@ const sliderSetup = function()
     });
     slider.slides[0].style.right = "0%";
 
+    timerStart(slider);
+
     slider.slider.addEventListener('touchstart', function (e) {
       slider.pressed = true;
       slider.startX = e.changedTouches[0].pageX;
+
+      timerClear(slider);
     });
   
     slider.slider.addEventListener('touchmove', function (e) {  
@@ -58,6 +87,8 @@ const sliderSetup = function()
   
     slider.slider.addEventListener('touchcancel', function (e) {
       slider.pressed = false;
+
+      timerStart(slider);
     });
   
     slider.slider.addEventListener('touchend', function (e) {
@@ -70,6 +101,8 @@ const sliderSetup = function()
         sliderChangeManual(slider, false, slider.startX, slider.sx);
         slider.first = true;
       }
+
+      timerStart(slider);
     });
   });
 }
@@ -279,6 +312,9 @@ const sliderChangeManual = async function(slider, press, sx, ax)
     }
   }
   else{
+    left = (slider.sliderC<1)?slider.slides.length-1:slider.sliderC-1;
+    right = (slider.sliderC>slider.slides.length-2)?0:slider.sliderC+1;
+
     if(parseFloat(slider.slides[slider.sliderC].style.right)>slider.manual_barier){
       moveManual(slider, slider.slides[slider.sliderC], 1, -1);
       moveManual(slider, slider.slides[right], 1, 1);
