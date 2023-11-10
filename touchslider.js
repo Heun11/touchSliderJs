@@ -22,10 +22,12 @@ const sliderCreateNew = function(sliderId)
       "threshold":80,
       "timerId":null,
       "moving":false,
-      
       "sx":0,
       "first":true,
       "manual_barier":18,
+      "canvasDiv":document.getElementById(sliderId).querySelector('.slider-canvas'),
+      "canvas":document.getElementById(sliderId).querySelector('.slider-canvas').querySelector('canvas'),
+      "ctx":document.getElementById(sliderId).querySelector('.slider-canvas').querySelector('canvas').getContext('2d'),
 
       "mode":'auto',
       "milis":'milis',
@@ -34,9 +36,53 @@ const sliderCreateNew = function(sliderId)
       "opacity":true,
       "moveafter":5000,
       "movedir":-1,
+      "visual_counter":true,
+      "visual_counter_color0":'#fafafa',
+      "visual_counter_color1":'#bac',
     }
   );
   return sliders.length-1;
+}
+
+const updateVisualCounter = function(slider)
+{
+  if(slider.visual_counter){
+    slider.canvas.style.width = '100%';
+    slider.canvas.style.height = '100%';
+
+    slider.canvas.width = slider.canvas.offsetWidth;
+    slider.canvas.height = slider.canvas.offsetHeight;
+
+    slider.ctx.clearRect(0,0,slider.canvas.width,slider.canvas.height);
+    // slider.ctx.fillRect(0,0,slider.canvas.width,slider.canvas.height);
+
+    var r = slider.canvas.height/2-1;
+    var d = (slider.canvas.width-r*2*slider.slides.length)/(slider.slides.length-1);
+
+    for(let i=0;i<slider.slides.length;i++){
+      slider.ctx.beginPath();
+      slider.ctx.arc(r + (d+r*2)*i, r, r, 0, 2 * Math.PI);
+      slider.ctx.fillStyle = slider.visual_counter_color0;
+      if(slider.sliderC==i){
+        slider.ctx.fillStyle = slider.visual_counter_color1;
+      }
+      slider.ctx.fill();
+      slider.ctx.strokeStyle = '#1a1a1a';
+      slider.ctx.stroke();
+    }
+  }
+  else{
+    slider.canvas.style.display = 'none';
+  }
+}
+
+const updateVisualCounterASAP = function(slider)
+{
+  var tick = function()
+  {
+    updateVisualCounter(slider);
+  }
+  setTimeout(tick, 2);
 }
 
 const timerStart = function(slider)
@@ -69,6 +115,9 @@ const sliderSetup = function()
     });
     slider.slides[0].style.right = "0%";
 
+    // setup slider-canvas
+    updateVisualCounterASAP(slider);
+
     timerStart(slider);
 
     slider.slider.addEventListener('touchstart', function (e) {
@@ -80,7 +129,7 @@ const sliderSetup = function()
   
     slider.slider.addEventListener('touchmove', function (e) {  
       slider.sx = e.changedTouches[0].pageX;
-      if(slider.mode=='manual', !slider.moving){
+      if(slider.mode=='manual' && !slider.moving){
         sliderChangeManual(slider, true, slider.startX, slider.sx);
         slider.first = false;
       }
@@ -203,6 +252,8 @@ const sliderChangeAuto = async function(slider, x)
     }
     move(slider, slider.slides[slider.sliderC], 1, 1);
   }
+  
+  updateVisualCounter(slider);
 }
 
 const moveManualLinear = async function(slider, element, dir, milis, num, op)
@@ -235,7 +286,6 @@ const moveManualLinear = async function(slider, element, dir, milis, num, op)
     }
     await new Promise(r => setTimeout(r, milis));
   }
-  console.log("done-linear");
   slider.moving = false;
 }
 
@@ -270,7 +320,6 @@ const moveManualNonLinear = async function(slider, element, dir, milis, num, op)
     element.style.opacity = (full_op);
     await new Promise(r => setTimeout(r, milis));
   }
-  console.log("done-nonlinear");
   slider.moving = false;
 }
 
@@ -353,4 +402,6 @@ const sliderChangeManual = async function(slider, press, sx, ax)
       }
     }
   }
+  
+  updateVisualCounter(slider);
 }

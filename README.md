@@ -34,6 +34,9 @@ Small JS&CSS TouchSlider library for touchscreen devices 📱
         <div class="slide">
             <h1>Slide 4</h1>
         </div>
+        <div class="slider-canvas">
+            <canvas></canvas>
+        </div>
     </div>
 
 #### then create new JS file and add this:
@@ -46,6 +49,9 @@ Small JS&CSS TouchSlider library for touchscreen devices 📱
     sliderChangeParam(sliderId, 'mode', 'auto'); // style of slider (auto, manual) (string)
     sliderChangeParam(sliderId, 'moveafter', 8000) // Move to next slide after this milis (int)
     sliderChangeParam(sliderId, 'movedir', -1) // Direction to move after time (-1/1) (int)
+    sliderChangeParam(sliderId, 'visual_counter', true) // Show sliderC with circles (bool)
+    sliderChangeParam(sliderId, 'visual_counter_color1', '#fafafa') // Color of current circle (string)
+    sliderChangeParam(sliderId, 'visual_counter_color0', '#fafafa') // Color of other circles (string)
 
     sliderSetup();  // Initialize all sliders (put after sliders are created)
 
@@ -60,4 +66,5 @@ Small JS&CSS TouchSlider library for touchscreen devices 📱
     [x] add non-linearity to manual mode
     [x] add support for multiple sliders
     [x] add automatic move when dont touched for some time
-    [] add circles to show slide count
+    [x] add circles to show slide count
+    [] update circles

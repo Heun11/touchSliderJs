@@ -1,6 +1,7 @@
 body{
   max-width: 100vw;
 }
+
 .slider{
   display: block;
   position: relative;
@@ -15,3 +16,13 @@ body{
   width: 100%;
   height: 50vh;
 }
+
+.slider-canvas{
+  display: block;
+  position: absolute;
+  height: 5%;
+  width: 60%;
+  top: 90%;
+  left: 20%;
+}
+
