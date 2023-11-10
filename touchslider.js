@@ -21,6 +21,7 @@ const sliderCreateNew = function(sliderId)
       "sliderC":0,
       "threshold":80,
       "timerId":null,
+      "moving":false,
       
       "sx":0,
       "first":true,
@@ -79,7 +80,7 @@ const sliderSetup = function()
   
     slider.slider.addEventListener('touchmove', function (e) {  
       slider.sx = e.changedTouches[0].pageX;
-      if(slider.mode=='manual'){
+      if(slider.mode=='manual', !slider.moving){
         sliderChangeManual(slider, true, slider.startX, slider.sx);
         slider.first = false;
       }
@@ -97,7 +98,7 @@ const sliderSetup = function()
       if(slider.mode=='auto'){
         sliderChangeAuto(slider, slider.endX);
       }
-      if(slider.mode=='manual'){
+      if(slider.mode=='manual' && !slider.moving){
         sliderChangeManual(slider, false, slider.startX, slider.sx);
         slider.first = true;
       }
@@ -234,6 +235,8 @@ const moveManualLinear = async function(slider, element, dir, milis, num, op)
     }
     await new Promise(r => setTimeout(r, milis));
   }
+  console.log("done-linear");
+  slider.moving = false;
 }
 
 const moveManualNonLinear = async function(slider, element, dir, milis, num, op)
@@ -267,6 +270,8 @@ const moveManualNonLinear = async function(slider, element, dir, milis, num, op)
     element.style.opacity = (full_op);
     await new Promise(r => setTimeout(r, milis));
   }
+  console.log("done-nonlinear");
+  slider.moving = false;
 }
 
 const moveManual = async function(slider, e, dir, op)
@@ -279,12 +284,12 @@ const moveManual = async function(slider, e, dir, op)
       moveManualLinear(slider, e, dir, slider.milis, slider.loop_n, op);
       break;
   }
-
 }
 
 const sliderChangeManual = async function(slider, press, sx, ax)
 {
   let x = sx-ax;
+
 
   if(press){
     if(slider.first){
@@ -312,6 +317,8 @@ const sliderChangeManual = async function(slider, press, sx, ax)
     }
   }
   else{
+    slider.moving = true;
+    
     left = (slider.sliderC<1)?slider.slides.length-1:slider.sliderC-1;
     right = (slider.sliderC>slider.slides.length-2)?0:slider.sliderC+1;
 
