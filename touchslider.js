@@ -76,13 +76,19 @@ const updateVisualCounter = function(slider)
   }
 }
 
+var updatingCount = 1;
+
 const updateVisualCounterASAP = function(slider)
 {
   var tick = function()
   {
     updateVisualCounter(slider);
+    if(updatingCount<100){
+      updatingCount+=1;
+      setTimeout(tick, updatingCount);
+    }
   }
-  setTimeout(tick, 2);
+  setTimeout(tick, updatingCount);
 }
 
 const timerStart = function(slider)
