@@ -52,6 +52,8 @@ Small JS&CSS TouchSlider library for touchscreen devices 📱
     sliderChangeParam(sliderId, 'visual_counter', true) // Show sliderC with circles (bool)
     sliderChangeParam(sliderId, 'visual_counter_color1', '#fafafa') // Color of current circle (string)
     sliderChangeParam(sliderId, 'visual_counter_color0', '#fafafa') // Color of other circles (string)
+    sliderChangeParam(sliderId1, 'visual_counter_outline', true); // Show outline on circles (bool)
+    sliderChangeParam(sliderId1, 'visual_counter_color_out', '#1f1f1f'); // Color of outline (string)
 
     sliderSetup();  // Initialize all sliders (put after sliders are created)
 

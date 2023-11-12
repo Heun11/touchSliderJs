@@ -8,6 +8,8 @@ sliderChangeParam(sliderId1, 'movedir', -1);
 sliderChangeParam(sliderId1, 'moveafter', 4000);
 sliderChangeParam(sliderId1, 'visual_counter', true);
 sliderChangeParam(sliderId1, 'visual_counter_color1', '#faf');
+sliderChangeParam(sliderId1, 'visual_counter_outline', true);
+sliderChangeParam(sliderId1, 'visual_counter_color_out', '#1f1f1f');
 
 var sliderId2 = sliderCreateNew("sliderNew"); // id of slider div
 sliderChangeParam(sliderId2, 'milis', 1);
