@@ -47,13 +47,16 @@ Small JS&CSS TouchSlider library for touchscreen devices 📱
     sliderChangeParam(sliderId, 'opacity', true); // Slider opacity change (bool)
     sliderChangeParam(sliderId, 'type', 'nonLinear'); // Type of slide (linear, nonLinear) (string)
     sliderChangeParam(sliderId, 'mode', 'auto'); // style of slider (auto, manual) (string)
-    sliderChangeParam(sliderId, 'moveafter', 8000) // Move to next slide after this milis (int)
-    sliderChangeParam(sliderId, 'movedir', -1) // Direction to move after time (-1/1) (int)
-    sliderChangeParam(sliderId, 'visual_counter', true) // Show sliderC with circles (bool)
-    sliderChangeParam(sliderId, 'visual_counter_color1', '#fafafa') // Color of current circle (string)
-    sliderChangeParam(sliderId, 'visual_counter_color0', '#fafafa') // Color of other circles (string)
-    sliderChangeParam(sliderId1, 'visual_counter_outline', true); // Show outline on circles (bool)
-    sliderChangeParam(sliderId1, 'visual_counter_color_out', '#1f1f1f'); // Color of outline (string)
+    sliderChangeParam(sliderId, 'moveafter', 8000); // Move to next slide after this milis (int)
+    sliderChangeParam(sliderId, 'movedir', -1); // Direction to move after time (-1/1) (int)
+    sliderChangeParam(sliderId, 'visual_counter', true); // Show sliderC with circles (bool)
+    sliderChangeParam(sliderId, 'visual_counter_color1', '#fafafa'); // Color of current circle (string)
+    sliderChangeParam(sliderId, 'visual_counter_color0', '#fafafa'); // Color of other circles (string)
+    sliderChangeParam(sliderId, 'visual_counter_outline', true); // Show outline on circles (bool)
+    sliderChangeParam(sliderId, 'visual_counter_color_out', '#1f1f1f'); // Color of outline (string)
+    sliderChangeParam(sliderId, 'visual_counter_type', 'image'); // type of visual counter ('color', 'image') (string)
+    sliderChangeParam(sliderId, 'visual_counter_image1', 'https://touchsliderjs.netlify.app/visual_counter1.png'); // url to image for selected (string)
+    sliderChangeParam(sliderId, 'visual_counter_image0', 'https://touchsliderjs.netlify.app/visual_counter0.png'); // url to image for other (string)
 
     sliderSetup();  // Initialize all sliders (put after sliders are created)
 
@@ -62,11 +65,4 @@ Small JS&CSS TouchSlider library for touchscreen devices 📱
     <script src="https://touchsliderjs.netlify.app/touchslider.js"></script>
     <script src='myFile.js' defer></script>
 
-### TODO  🫡
-    [x] add parseFloat to auto moving functions
-    [x] add opacity to manual mode
-    [x] add non-linearity to manual mode
-    [x] add support for multiple sliders
-    [x] add automatic move when dont touched for some time
-    [x] add circles to show slide count
-    [] update circles
+### Hope you will like it! (if not, give feedback please)  🫡

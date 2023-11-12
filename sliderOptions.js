@@ -18,6 +18,7 @@ sliderChangeParam(sliderId2, 'opacity', true);
 sliderChangeParam(sliderId2, 'type', 'nonLinear');
 sliderChangeParam(sliderId2, 'mode', 'auto');
 sliderChangeParam(sliderId2, 'movedir', 0);
-sliderChangeParam(sliderId2, 'visual_counter', false);
+sliderChangeParam(sliderId2, 'visual_counter', true);
+sliderChangeParam(sliderId2, 'visual_counter_type', 'image');
 
 sliderSetup();
